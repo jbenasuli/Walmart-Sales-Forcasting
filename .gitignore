@@ -1,3 +1,13 @@
+# OS Generated Files
+.DS_Store
+
+# local-only folders
+local-files/
+project-description/
+project-data/
+zippedData/
+templates/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
