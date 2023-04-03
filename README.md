@@ -99,54 +99,67 @@ To handle this binary classification problem, we trained and tested several diff
 
 ### Models
 
-Basic logistic regression
+To forecast sales, our team uses sklearn's RandomForestRegressor. Rather than research new models, our approach for this stage of development focuses on feature selection. As our understanding of the data and viable applications grows and our focus shits to fine tuning models for production, we may to test other models in addition to engineering additional parameters. 
 
-- We deployed an out of the box logistic regression model to serve as our baseline
+Baseline model
+
+- Included all features without any transformations
 - Scoring:
-  - Test accuracy: 0.93
-  - Test AUC-ROC score: 0.756
-  - Test log loss score: 0.228
-  <img src='imgs/base-logreg-cm.png' width='60%' height='60%'>
+  - RMSE: 
+  - MAE: 
+  <img src='imgs/<insert-image-name>' width='60%' height='60%'>
 
-Random Forest Model
+Model iterations
 
-- We deployed an out of the box RandomForestClassifier model next
-- The scores were similar to that of the basic logistic regression
-- We leveraged RandomForestClassifier module to look at the importances of our features
+Selecting a scaler
+took opportunity to establish pipeline and column transform to aid in scaling future model feature complexity
+
+- StandardScaler
+- Scoring:
+  - RMSE:
+  - MAE:
+
+- MinMaxScaler
+- Scoring:
+  - RMSE:
+  - MAE:
+
+Scores are now back in line with the baseline model. While we don't see the upside of scaling here with this limited dataset. In order to ensure the viability of our model being reproduced and scaled in production, we keep the MinMaxScaler transformation in for all future iterations.
+
+Only include date variables in the feature set # edit below
+
+- Nothing super corellated and those are basic drivers blah bblah 
+- Scoring:
+  - RMSE:
+  - MAE:
+- Results were sig worse etc. 
   <img src='imgs/Random-Forrest-Feature-Importances.png' width='70%' height='70%'>
 
-Random Forest Model w/ SMOTE
+We leveraged RandomForestRegressor features methods to visualize feature importance
 
-- Using SMOTE to oversample the minority class improved our ability to correctly predict goals
-- However we traded a lot of false negatives for false positives
-- Log loss jumped to .3
-  
+Top 10 features from feature importance # edit below
+
+- Features are xxxx
+- Scoring:
+  - RMSE:
+  - MAE:
+- Results were meh
   <img src='imgs/smote-rf-cm.png' width='50%' height='50%'>
 
-Random Forest using data subset
+Manual Feature Selection
 
-- Since SMOTE did not improve results to our liking, we decided to employ a different sampling solution
-- Took a subset of ‘No Goal’ shots = to the number of shots which scored a goal
+- Leveraging EDA insights (distribution visualizations) and domain knowledge to select features
+- Chose xxx because
+- Chose yyyy because
 - Scoring:
-  - Test accuracy: 0.67
-  - Test AUC-ROC score: 0.737
-  - Test log loss score: 0.601
-- While our ability to correctly classify true positive outcomes significantly improved, log loss doubled
+  - RMSE:
+  - MAE:
+- Good!
   <img src='imgs/rf-sampled-cm.png' width='50%' height='50%'>
-
-Cross Validated Logistic Regression Cross Validation on the subset
-
-- Deployed GridSearchCV to optimize logistic regression models
-- Scoring:
-  - Test accuracy: 0.68
-  - Test AUC-ROC score: 0.756
-  - Test log loss score: 0.586
-- Marginal improvements over the previous attempt with random forest
-  <img src='imgs/sampled-logreg-cv-cm.png' width='50%' height='50%'>
 
 ### Evaluation
 
-The metrics used to evaluate our models are AUC-ROC and log loss
+The metrics used to evaluate our models are RMSE and MAE # edit below
 
 - Both AUC-ROC and log loss are common metrics used to score classification models
 - Generally, the closer AUC-ROC is to 1 and the closer log loss is to 0 the better
@@ -183,11 +196,10 @@ The metrics used to evaluate our models are AUC-ROC and log loss
 ## Repo Structure
 
 ```
+├── data
 ├── imgs
 ├── .gitignore
-├── NHL-Expected-Goals-Notebook.pdf
-├── NHL-Expected-Goals-Presentation.pdf
-├── NHL-Expected-Goals.ipynb
-└── README.md
+├── forecasting-walmart-sales.ipynb
+├── README.md
+└── Walmart-Sales-Forecasting-Presentation.pdf
 ```
-
