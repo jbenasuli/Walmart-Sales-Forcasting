@@ -8,6 +8,28 @@ The purpose of an expected goals (xG) models is to estimate the value of any giv
 
 ## Business and Data Understanding
 
+### Reflect in notebook
+
+Business Understanding: Notebook clearly explains the project’s value for helping a specific stakeholder solve a real-world problem.
+
+- Introduction explains the real-world problem the project aims to solve
+- Introduction identifies stakeholders who could use the project and how they would use it 
+- Conclusion summarizes implications of the project for the real-world problem and stakeholders
+
+Data Understanding: Notebook clearly describes the source and properties of the data to show how useful the data are for solving the problem of interest.
+
+- Describe the data sources and explain why the data are suitable for the project
+- Present the size of the dataset and descriptive statistics for all features used in the analysis
+- Justify the inclusion of features based on their properties and relevance for the project
+- Identify any limitations of the data that have implications for the project
+
+Evaluation: Notebook shows how well a final model solves the real-world problem.
+
+- Justifies choice of metrics using context of the real-world problem and consequences of errors
+- Identifies one final model based on performance on the chosen metrics with validation data
+- Evaluates the performance of the final model using holdout test data
+- Discusses implications of the final model evaluation for solving the real-world problem
+
 ### Stakeholders & Business Problem
 
 - Many NHL teams are still resistant to using advanced analytics despite the quality and quantity of game data greatly improving in recent years
