@@ -34,32 +34,30 @@ Prior to modeling, EDA was performed to identify any trends, issues, and preproc
 
 We first examined the relationship between our target variable (weekly sales) and selected factors to gain insights into how to best construct our model.
 
-- Distribution of weekly sales over time
-  <!-- ![goal-no_goal-dist-img](<imgs/sales-by-date-distribution.png>) -->
-  <img src='imgs/sales-by-date-distribution.png' width='50%' height='50%'>
+Distribution of weekly sales over time
+<img src='imgs/sales-by-date-distribution.png' width='50%' height='50%'>
 
-  - Highlights how certain factors can have huge effects on consumer demand and store sales
-  - As could be expected given the relation between retail activity and holidays, a given date -as evidenced by the two large spikes- can clearly play a very large role in determining sales volume
+- Highlights how certain factors can have huge effects on consumer demand and store sales
+- As could be expected given the relation between retail activity and holidays, a given date -as evidenced by the two large spikes- can clearly play a very large role in determining sales volume
 
-- Distribution of weekly sales over inflation levels
-  <!-- ![feature-hist](<imgs/sales-over-cpi.png>) -->
-  <img src='imgs/sales-over-cpi.png' width='75%' height='75%'>
+Distribution of weekly sales over inflation levels
+<img src='imgs/sales-over-cpi.png' width='50%' height='50%'>
 
-  - This example highlights that common external factors, such as inflation, might not influence sales activity to the degree many would assume it would
-  - While the spread of inflation rates in our window is not very big, sales for the three buckets of inflationary rates are surprisingly relatively evenly distributed
+- This example highlights that common external factors, such as inflation, might not influence sales activity to the degree many would assume it would
+- While the spread of inflation rates in our window is not very big, sales for the three buckets of inflationary rates are surprisingly relatively evenly distributed
 
-- Numeric feature correlation
-  <!-- ![feature-heatmap](<imgs/sales-feature-heatmap.png>) -->
-  <img src='imgs/sales-feature-heatmap.png' width='50%' height='50%'>
+Numeric feature correlation
+<img src='imgs/sales-feature-heatmap.png' width='75%' height='75%'>
 
-  - There aren't any numeric features which immediately stand out as being highly correlated
-  - We will conduct feature engineering to ensure we extract maximum predictive power from our data
+- There aren't any numeric features which immediately stand out as being highly correlated
+- We will conduct feature engineering to ensure we extract maximum predictive power from our data
 
-- Annual average weekly sales
-  <img src='imgs/weekly-sales-per-year.png' width='50%' height='50%'>
+Annual average weekly sales
 
-  - This chart further reinforces the importance of date as a feature
-  - Drilling down on weeks where sales spike and mapping those periods to dates unlocks a number of insights into which holidays drive sales and the different ways individual holidays shape sales activity
+<img src='imgs/weekly-sales-per-year.png' width='75%' height='75%'>
+
+- This chart further reinforces the importance of date as a feature
+- Drilling down on weeks where sales spike and mapping those periods to dates unlocks a number of insights into which holidays drive sales and the different ways individual holidays shape sales activity
 
 Data Methodology
 
@@ -102,26 +100,25 @@ Only date and holiday features
 - Scoring:
   - RMSE: 22,113.89
   - MAE: 14,879.50
-- Results were significantly worse, clearly there is predictive power in some of our other features 
+- Results were significantly worse, clearly there is predictive power in some of our other features
 
 Leveraging RandomForestRegressor features methods to visualize feature importance
 
-  <img src='imgs/all-feat-importances.png' width='50%' height='50%'>
+<img src='imgs/all-feat-importances.png' width='100%' height='100%'>
 
 Modeling the top 10 features based on feature importance
 
-Top 10 Feature Importances:
-
-- 'Dept'
-- 'Size'
-- 'Store'
-- 'Week'
-- 'CPI'
-- 'Unemployment'
-- 'Type'
-- 'Temperature'
-- 'MarkDown3'
-- 'Month'
+- Top 10 Feature Importances:
+  - 'Dept'
+  - 'Size'
+  - 'Store'
+  - 'Week'
+  - 'CPI'
+  - 'Unemployment'
+  - 'Type'
+  - 'Temperature'
+  - 'MarkDown3'
+  - 'Month'
 
 - Scoring:
   - RMSE: 5,063.34
@@ -152,7 +149,6 @@ The metrics used to evaluate our models are RMSE and MAE
   - Non negative and disregard error direction
   - Lower the better
 
-
 ## Conclusion
 
 ### Observations
@@ -169,7 +165,7 @@ The metrics used to evaluate our models are RMSE and MAE
 - The benefits of this tool could trickle down throughout the Walmart ecosystem
   - the better the marketplace is able to meet our customers' needs, the more time they will spend on walmart.com
   - we expect increased time and spend on our platforms to be a catalyst for improved sale conversion as it creates additional opportunities for activities such as cross sales
-  - the additional data derived from the incease in marketplace activity will allow for the continous improvement and spearheading of tools such as this one
+  - the additional data derived from the increase in marketplace activity will allow for the continuous improvement and spearheading of tools such as this one
 
 ### Future Recommendations
 
