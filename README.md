@@ -35,17 +35,21 @@ Prior to modeling, EDA was performed to identify any trends, issues, and preproc
 We first examined the relationship between our target variable (weekly sales) and selected factors to gain insights into how to best construct our model.
 
 Distribution of weekly sales over time
-- <img src='imgs/sales-by-date-distribution.png' width='50%' height='50%'>
-  - Highlights how certain factors can have huge effects on consumer demand and store sales
-  - As could be expected given the relation between retail activity and holidays, a given date -as evidenced by the two large spikes- can clearly play a very large role in determining sales volume
+
+<img src='imgs/sales-by-date-distribution.png' width='50%' height='50%'>
+
+- Highlights how certain factors can have huge effects on consumer demand and store sales
+- As could be expected given the relation between retail activity and holidays, a given date -as evidenced by the two large spikes- can clearly play a very large role in determining sales volume
 
 Distribution of weekly sales over inflation levels
-- <img src='imgs/sales-over-cpi.png' width='50%' height='50%'>
+
+<img src='imgs/sales-over-cpi.png' width='50%' height='50%'>
 
 - This example highlights that common external factors, such as inflation, might not influence sales activity to the degree many would assume it would
 - While the spread of inflation rates in our window is not very big, sales for the three buckets of inflationary rates are surprisingly relatively evenly distributed
 
 Numeric feature correlation
+
 <img src='imgs/sales-feature-heatmap.png' width='75%' height='75%'>
 
 - There aren't any numeric features which immediately stand out as being highly correlated
