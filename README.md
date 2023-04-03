@@ -1,197 +1,186 @@
 # Walmart-Sales-Forcasting
 
-Using historical markdown data to predict store sales
+Using historical sales data to predict future sales
 
 ## Overview
 
-The purpose of an expected goals (xG) models is to estimate the value of any given shot taken. Understanding that shots do not have a uniform chance of scoring, xG models leverage a variety of numeric and categorical data to create valuations for individual shots. The value assigned to a given shot is the probability it results in a goal.
+The ability of manufacturers, resellers and retailers to properly forecast sales has always been a key determinant of their success. Despite the increased availability of forecasting/planning tools and the backdrop of persistent global supply chain challenges, many small and medium businesses do not employ formal forecasting and planning tools to inform business decisions. As the world continues to grapple with the ongoing COVID-19 pandemic, deglobalization and a host of other geopolitical issues, efficiently managing supply chains will continue to be a challenge for most business. However, recent recent advances in machine learning techniques for modeling time series data offers an opportunity for companies of all sizes to not only survive an unpredictable global market but also thrive.
 
 ## Business and Data Understanding
 
-### Reflect in notebook
-
-Business Understanding: Notebook clearly explains the project’s value for helping a specific stakeholder solve a real-world problem.
-
-- Introduction explains the real-world problem the project aims to solve
-- Introduction identifies stakeholders who could use the project and how they would use it 
-- Conclusion summarizes implications of the project for the real-world problem and stakeholders
-
-Data Understanding: Notebook clearly describes the source and properties of the data to show how useful the data are for solving the problem of interest.
-
-- Describe the data sources and explain why the data are suitable for the project
-- Present the size of the dataset and descriptive statistics for all features used in the analysis
-- Justify the inclusion of features based on their properties and relevance for the project
-- Identify any limitations of the data that have implications for the project
-
-Evaluation: Notebook shows how well a final model solves the real-world problem.
-
-- Justifies choice of metrics using context of the real-world problem and consequences of errors
-- Identifies one final model based on performance on the chosen metrics with validation data
-- Evaluates the performance of the final model using holdout test data
-- Discusses implications of the final model evaluation for solving the real-world problem
-
 ### Stakeholders & Business Problem
 
-- Many NHL teams are still resistant to using advanced analytics despite the quality and quantity of game data greatly improving in recent years
-- Reliance on older, less advanced metrics such as simply counting shot volume puts coaching and front office staffs at a disadvantage
-- Our firm, Hockey Data LLC, has been contracted by an NHL team to build them an xG model 
-- Our goal in building this model is to provide stakeholders with a tool to better evaluate past results and predict future performance
-- Understanding how many goals individuals and teams as a whole can be expected generate can provide insight and drive strategic decision making in numerous ways:
-  - Front offices can use it when evaluating players they are considering signing and valuing contracts during negotiations
-  - Coaches can use it to help optimize their own lineups and to better understand a given opponents' game and plan adjustments accordingly
-  - Players can use it to better understand their own performance and gain insights into how they can tweak their own game to produce better individual and in turn team results
-
+- Covid has highlighted the importance of sales forecasting/demand planning capabilities for manufacturers, wholesalers, and retailers
+  - Ex: Peloton Covid demand surge CapEx
+- Without sales forecasting/demand planning tools, Walmart’s marketplace sellers are unable to optimally plan their business activity  
+  - However implementation of ERPs/CRMs is too resource intensive for many (smaller) Marketplace sellers
+- Our team, Walmart Store Sales DS, has been engaged by members of the Marketplace Strategy and Product teams to develop a prototype solution for Marketplace vendors
+- Can we leverage our expertise in forecasting Walmart store sales to develop an affordable sales forecasting/demand planning solution for Walmart Marketplace sellers?
+  
 ### Data Understanding
 
 Source and Methodology
 
-- Data is comprised of individual shot data from the 2021-2022 NHL season
-- Shot data was sourced from [moneypuck.com](https://moneypuck.com/data.htm)
-  - Moneypuck shot data tracks 124 features for each individual shot instance
-  - Data is compiled by scraping the ESPN and NHL websites
-  - Includes additional metrics derived from scraped league data
-- All unblocked, "Fenwick", shots are included in our analysis
-  - Blocked shots are not included, as the NHL records the location of the player blocking a shot instead of where the shot was taken for blocks
-- Feature set include variables such as shot type, shot location, game strength state (i.e. is the shooting team on a powerplay)
-- The target variable is Goal
-  - This problem is treated as binary classification as we want to know the probability of any given shot to go in (1) or not (0)
+- Historical Walmart store sales data
+  - 2.75 yrs (2010-02-05 to 2012-10-26)
+- Data was collected internally by Walmart's finance team
+  - Certain historical data was deleted prior to handoff to simulate the less than ideal data we expect our sellers to have at their disposal
+- Target variable is Weekly Sales
+- Features include various internal and external factors
+  - Internal ex: store type, size, markdown levels, promotional periods
+  - External ex: CPI, temperature, gas prices
 
-Prior to modeling, EDA was performed to identify any potential issues and preprocessing requirements
+Prior to modeling, EDA was performed to identify any trends, issues, and preprocessing requirements.
 
-- Target variable distribution
-  <!-- ![goal-no_goal-dist-img](<imgs/goal-no_goal-dist.png>) -->
-  <img src='imgs/goal-no_goal-dist.png' width='50%' height='50%'>
+We first examined the relationship between our target variable (weekly sales) and selected factors to gain insights into how to best construct our model.
 
-  - Our target variable is highly imbalanced
-  - This imbalance will have to be addressed with sampling techniques during our modeling
+- Distribution of weekly sales over time
+  <!-- ![goal-no_goal-dist-img](<imgs/sales-by-date-distribution.png>) -->
+  <img src='imgs/sales-by-date-distribution.png' width='50%' height='50%'>
 
-- Numeric feature distribution
-  <!-- ![feature-hist](<imgs/feature-histograms.png>) -->
-  <img src='imgs/feature-histograms.png' width='75%' height='75%'>
+  - Highlights how certain factors can have huge effects on consumer demand and store sales
+  - As could be expected given the relation between retail activity and holidays, a given date -as evidenced by the two large spikes- can clearly play a very large role in determining sales volume
 
-  - There is a mix of binary and continuous non-normally distributed features in the data
-  - StandardScalar will be used to normalize these features for modeling
+- Distribution of weekly sales over inflation levels
+  <!-- ![feature-hist](<imgs/sales-over-cpi.png>) -->
+  <img src='imgs/sales-over-cpi.png' width='75%' height='75%'>
+
+  - This example highlights that common external factors, such as inflation, might not influence sales activity to the degree many would assume it would
+  - While the spread of inflation rates in our window is not very big, sales for the three buckets of inflationary rates are surprisingly relatively evenly distributed
 
 - Numeric feature correlation
-  <!-- ![feature-heatmap](<imgs/feature-heatmap.png>) -->
-  <img src='imgs/feature-heatmap.png' width='75%' height='75%'>
+  <!-- ![feature-heatmap](<imgs/sales-feature-heatmap.png>) -->
+  <img src='imgs/sales-feature-heatmap.png' width='50%' height='50%'>
 
   - There aren't any numeric features which immediately stand out as being highly correlated
-  - We will incorporate some categorical variables to see if they have more predictive power
+  - We will conduct feature engineering to ensure we extract maximum predictive power from our data
 
-- Handling categorical variables
-  - Shot type is likely an important feature
+- Annual average weekly sales
+  <img src='imgs/weekly-sales-per-year.png' width='50%' height='50%'>
 
-<img src='imgs/shots-taken-by-shot-type.png' width='50%' height='50%'> 
-<img src='imgs/goals-scored-by-shot-type.png' width='50%' height='50%'>
+  - This chart further reinforces the importance of date as a feature
+  - Drilling down on weeks where sales spike and mapping those periods to dates unlocks a number of insights into which holidays drive sales and the different ways individual holidays shape sales activity
 
-These values will have to be one hot encoded for modeling
+Data Methodology
 
-- Man up/down situations also certainly play a role in expected goal generation
-  - We use data detailing the number of players on the ice at the time of a shot event to compute a game strength state feature
-  - Each row was imputed with one of the 9 different strength states for even strength, powerplay, and penalty kil situations
+- General feature engineering
+  - Ordinally encoded the store type variable
+  - Extracted the year, month, and week from the date associated with each record
+- Holiday/promotional period feature engineering
+  - Our experience in store sales has emphasized the importance of considering holidays/promotional periods when planning business activity
+- Basic pipelines and column transformers were built to iterate through different models and scaling techniques
+  - This architecture will allow us to scale more complicated transformation in the future
+- Pipelines were passed to random forest regressors for modeling
 
 ## Modeling
 
-### Overview
+To forecast sales, our team uses sklearn's RandomForestRegressor. Rather than research new models, our approach for this stage of development focuses on feature selection. As our understanding of the data and viable applications grows and our focus shits to fine tuning models for production, we may to test other models in addition to engineering additional parameters.
 
-To handle this binary classification problem, we trained and tested several different models. Various hyperparameters for each model were tuned in order to optimize performance. Pipelines were constructed to handle categorical and numerical features to ensure workflow integrity and reproducibility.
+### Results
 
-### Models
-
-To forecast sales, our team uses sklearn's RandomForestRegressor. Rather than research new models, our approach for this stage of development focuses on feature selection. As our understanding of the data and viable applications grows and our focus shits to fine tuning models for production, we may to test other models in addition to engineering additional parameters. 
-
-Baseline model
+#### Baseline model
 
 - Included all features without any transformations
 - Scoring:
-  - RMSE: 
-  - MAE: 
-  <img src='imgs/<insert-image-name>' width='60%' height='60%'>
+  - RMSE: 5,030.87
+  - MAE: 2,296.40
 
-Model iterations
+#### Model iterations
 
-Selecting a scaler
-took opportunity to establish pipeline and column transform to aid in scaling future model feature complexity
+Scaling features
 
-- StandardScaler
-- Scoring:
-  - RMSE:
-  - MAE:
-
+- Took opportunity to establish pipeline and column transform to aid in scaling future model feature complexity
 - MinMaxScaler
 - Scoring:
-  - RMSE:
-  - MAE:
+  - RMSE: 5,037.66
+  - MAE: 2,295.92
 
-Scores are now back in line with the baseline model. While we don't see the upside of scaling here with this limited dataset. In order to ensure the viability of our model being reproduced and scaled in production, we keep the MinMaxScaler transformation in for all future iterations.
+- Scores are in line with the baseline model. While we don't see the upside of scaling here with this limited dataset. In order to ensure the viability of our model being reproduced and scaled in production, we keep the MinMaxScaler transformation in for all future iterations.
 
-Only include date variables in the feature set # edit below
+Only date and holiday features
 
-- Nothing super corellated and those are basic drivers blah bblah 
 - Scoring:
-  - RMSE:
-  - MAE:
-- Results were sig worse etc. 
-  <img src='imgs/Random-Forrest-Feature-Importances.png' width='70%' height='70%'>
+  - RMSE: 22,113.89
+  - MAE: 14,879.50
+- Results were significantly worse, clearly there is predictive power in some of our other features 
 
-We leveraged RandomForestRegressor features methods to visualize feature importance
+Leveraging RandomForestRegressor features methods to visualize feature importance
 
-Top 10 features from feature importance # edit below
+  <img src='imgs/all-feat-importances.png' width='50%' height='50%'>
 
-- Features are xxxx
+Modeling the top 10 features based on feature importance
+
+Top 10 Feature Importances:
+
+- 'Dept'
+- 'Size'
+- 'Store'
+- 'Week'
+- 'CPI'
+- 'Unemployment'
+- 'Type'
+- 'Temperature'
+- 'MarkDown3'
+- 'Month'
+
 - Scoring:
-  - RMSE:
-  - MAE:
-- Results were meh
-  <img src='imgs/smote-rf-cm.png' width='50%' height='50%'>
+  - RMSE: 5,063.34
+  - MAE: 2,294.50
 
 Manual Feature Selection
 
 - Leveraging EDA insights (distribution visualizations) and domain knowledge to select features
-- Chose xxx because
-- Chose yyyy because
 - Scoring:
-  - RMSE:
-  - MAE:
-- Good!
-  <img src='imgs/rf-sampled-cm.png' width='50%' height='50%'>
+  - RMSE: 3,545.91
+  - MAE: 1,672.03
+- Best results
 
 ### Evaluation
 
-The metrics used to evaluate our models are RMSE and MAE # edit below
+The metrics used to evaluate our models are RMSE and MAE
 
-- Both AUC-ROC and log loss are common metrics used to score classification models
-- Generally, the closer AUC-ROC is to 1 and the closer log loss is to 0 the better
-- AUC-ROC measures the models ability to correctly classify our targets
-- Log loss measures how close the model's predictions are to the actual labels - i.e. the model's predictive power
-- Given the imbalanced nature of the data, we are using both metrics to check for instances where one type of quality is being sacrificed for another
-- From our research, industry benchmarks for the scores are as follows:
-  - ROC-AUC score >= .77
-  - Log loss =< .20
+- RMSE
+  - Root mean squared error
+  - Standard deviation of the residuals (prediction errors)
+  - Gives more weight to large errors
+- MAE
+  - Mean absolute error
+  - Calculated as the sum of absolute errors divided by the sample size
+  - Easier to interpret
+- Features of both metrics
+  - In the unit of the target variable
+  - Non negative and disregard error direction
+  - Lower the better
+
 
 ## Conclusion
 
 ### Observations
 
-- Modeling publicly available data can provide actionable insight for coaches and players, but there is room for improvement
-- Only our basic tests achieved scores in line with our benchmark
-  - Despite scoring well, those models struggled with predicting true positives
-- More work needs to be done to reduce the number of false negatives
-- While subsetting the data produced decent results, log loss jumped significantly
-  - Such high levels of log loss call the predictive capability of those models into question
+- Even with incomplete historical sales data, we can cheaply and reliably forecast future sales
+
+- This tool can provide material benefit for Marketplace sellers
+  - Could become a significant differentiator re Walmart Marketplace's ability to compete with the likes of Amazon
+
+- We believe equipping sellers with our forecasting tool can only improve the marketplace experience 
+  - sellers being able to optimize planning and respond to market trends allows for a more seamless customer experience
+  - the value of the tool to sellers lures more sellers to marketplace giving customers access to a broader range of goods and solidifies Walmart's positioning as the one stop shop
+
+- The benefits of this tool could trickle down throughout the Walmart ecosystem
+  - the better the marketplace is able to meet our customers' needs, the more time they will spend on walmart.com
+  - we expect increased time and spend on our platforms to be a catalyst for improved sale conversion as it creates additional opportunities for activities such as cross sales
+  - the additional data derived from the incease in marketplace activity will allow for the continous improvement and spearheading of tools such as this one
 
 ### Future Recommendations
 
-- Use several years worth of data
-  - If this prevents us from having to subset the sample data, it should allow us to maintain acceptable log loss levels 
-- Revisit feature selection
-- Construct separate models for different game strength classes 
-  - Different strengths dominates feature importance, but majority of game is played even strength
-  - Feature importance might differ between states
-- Use team proprietary data
-  - Introduce other features public data does not account for
-  - Proprietary data could well be better than league data and provide an edge
+Next steps:
+
+- Additional feature engineering
+  - Identify additional date related factors potentially driving sales fluctuations
+  - Are there external factors, which might be affecting sales which he haven’t considered/ have data for (e.g. GDP, local cost of living metrics, equity market values)?
+- Construct separate models for different Marketplace Seller Segments
+  - Not all sellers will have a product mix which tracks the traditional holiday calendar
+  - Ex: pool/beach supply sellers
 
 ## Repo Structure
 
